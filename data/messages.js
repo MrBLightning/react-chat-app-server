@@ -22,7 +22,7 @@ const getLast10RoomMessages = async (room) => {
     pool.config.connectionConfig.database = selectedDB;
     try {
         const allMessages = await pool.query(`SELECT m.Id,m.messageText,u.name,u.pic FROM messages m, users u 
-                                            WHERE u.name=m.fromUserName ORDER BY m.timestamp DESC LIMIT 10`);
+                                            WHERE u.name=m.fromUserName ORDER BY m.Id DESC LIMIT 10`);
         allMessages.sort((a, b) => (a.Id > b.Id) ? 1 : -1)
         return { messages: allMessages || [] };
     } catch (err) {

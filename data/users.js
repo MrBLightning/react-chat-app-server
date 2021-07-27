@@ -3,7 +3,7 @@ const { pool } = require('./db.service');
 const mysql = require('mysql');
 const selectedDB = "baraktestchat";
 
-const addUser = async ({ id, name, room }) => {
+const addUser = async ({ id, name, room, pic }) => {
   pool.config.connectionConfig.database = selectedDB;
   name = name.trim().toLowerCase();
   room = room.trim().toLowerCase();
@@ -13,10 +13,14 @@ const addUser = async ({ id, name, room }) => {
   try {
     const existingUser = await pool.query(`SELECT * FROM users WHERE name=${mysql.escape(name)} LIMIT 1`);
     if (existingUser[0] && existingUser[0].Id) {
-      await pool.query(`UPDATE users SET Id=${mysql.escape(id)}, room=${mysql.escape(room)} WHERE name=${mysql.escape(name)}`);
+      await pool.query(`UPDATE users SET Id=${mysql.escape(id)}, room=${mysql.escape(room)}, 
+      pic=CASE WHEN ${mysql.escape(pic)} <> '' THEN ${mysql.escape(pic)} END
+      WHERE name=${mysql.escape(name)}`);
     } else {
-      await pool.query(`INSERT INTO users(Id, name, room) VALUES (${mysql.escape(id)}, ${mysql.escape(name)}, ${mysql.escape(room)})
-      ON DUPLICATE KEY UPDATE Id=${mysql.escape(id)}, name=${mysql.escape(name)}, room=${mysql.escape(room)}`);
+      await pool.query(`INSERT INTO users(Id, name, room, pic) VALUES (${mysql.escape(id)}, ${mysql.escape(name)}, 
+      ${mysql.escape(room)}, ${mysql.escape(pic)}) ON DUPLICATE KEY UPDATE Id=${mysql.escape(id)}, 
+      name=${mysql.escape(name)}, room=${mysql.escape(room)}, pic =
+      CASE WHEN ${mysql.escape(pic)} <> '' THEN ${mysql.escape(pic)} END`);
     }
 
     const user = { id, name, room };
