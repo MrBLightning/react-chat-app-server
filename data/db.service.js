@@ -2,6 +2,7 @@ require('dotenv').config();
 const util = require('util');
 const mysql = require('mysql');
 
+// add these variables to your .env file
 const host = process.env.DB_HOST;
 const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
