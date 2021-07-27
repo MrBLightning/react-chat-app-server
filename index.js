@@ -21,6 +21,7 @@ const io = socketio(server, {
     },
 });
 
+// add these variables to your .env file
 const PORT = process.env.PORT || 5000;
 const adminPic = process.env.ADMIN_PIC;
 
